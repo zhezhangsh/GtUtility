@@ -1,0 +1,26 @@
+# Export GtUtility class.
+exportClasses(
+    "GtUtility" 
+)
+
+# Export the public standalone methods in GtUtility
+export("alleleFreq.r");
+export("annotateCoding.r");
+export("annotateLocation.r");
+export("countGenotype.r");
+export("filterVariants.r");
+export("getEff.r");
+export("loadVcf.r");
+export("map2gene.r");
+export("mergeRegions.r");
+export("pairIBD.r");
+export("parseVcf.r");
+export("recodeCalls.r");
+export("runFisher.r");
+export("runIBD.r");
+export("runSkat.r");
+export("runTrend.r");
+export("selectIBD.r");
+export("subsetFromDb.r");
+export("subsetSamples.r");
+
