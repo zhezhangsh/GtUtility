@@ -30,7 +30,7 @@ runSkatCl<-function(ids=list(), gt, samples0, samples1, cov=NA, resampling=0, me
   n<-sort(n)[length(n):1];
   sm<-cumsum(n);
   sz<-ceiling(sm[length(n)]/num.threads);
-  sz<-min(sz, 10^8/ncol(g)); 
+  sz<-min(sz, 10^8/ncol(gt)); 
   sz<-round(max(sz, max(n))); 
   ind<-sapply(1:ceiling(sum(n)/sz), function(i) min(which(sm >= min(sm[length(n)], i*sz))));
   ind<-c(0, unique(ind));
