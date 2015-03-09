@@ -43,7 +43,7 @@ loadVcf<-function(fn.in, fn.out, genome.name, regions=NA, split.regions=FALSE, v
       save(vcf, file=fnm);
       fnm;
     } else { # 
-      nm<-paste(as.vector(seqnames(regions)), '_', start(regions), '-', end(regions), sep='');
+      nm<-paste(names(regions), '_', start(regions), '-', end(regions), sep='');
       fnm<-paste(fn.out, '_', nm, '.rdata', sep='');
       names(regions)<-nm;
       lapply(nm, function(nm) {
