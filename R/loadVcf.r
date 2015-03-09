@@ -25,7 +25,7 @@ loadVcf<-function(fn.in, fn.out, genome.name, regions=NA, split.regions=FALSE, v
   
   
   chr.names<-headerTabix(fn.in)$seqnames; # seqnames in VCF file
-  if (!identical(regions, NA)) regions<-regions[as.vector(seqnames(regions)) %in% chr.names]; # remove chr names not in VCF file
+  if (!identical(regions, NA)) regions<-regions[names(regions) %in% chr.names]; # remove chr names not in VCF file
   if (length(regions)==0) regions<-NA; # if none of the regions are in VCF file, import all file
   
   tab<-TabixFile(fn.in);
