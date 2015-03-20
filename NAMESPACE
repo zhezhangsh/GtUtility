@@ -26,3 +26,4 @@ export("runTrendCl");
 export("selectIBD");
 export("subsetFromDb");
 export("subsetSamples");
+export("analyzeTrio");

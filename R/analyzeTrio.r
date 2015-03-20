@@ -21,7 +21,7 @@ analyzeTrio<-function(geno, trio, analyses=list(
     
     ##################################################################################################
     # summarize de novo mutations
-    if (exists(analyses$de.novo)) if (analyses$de.novo[1] == TRUE) {
+    if (exists('analyses$de.novo')) if (analyses$de.novo[1] == TRUE) {
       ttl<-!is.na(g[[1]]) & !is.na(g[[2]]) & !is.na(g[[3]]) & g[[2]]==0 & g[[3]]==0;
       yes<-ttl & g[[1]]==1;
       no<-ttl & g[[1]]==0;
