@@ -30,7 +30,7 @@ map2gene<-function(rows, chromosome.mapping, species='human', targeted=NA, cadd.
   ct[ct>1]<-1;
   
   # CADD scores of variants when available
-  if (class(cadd.cnm)=='character' & !is.null(elementMetadata(rows)[, cadd.cnm])) cadd<-elementMetadata(rows)[, cadd.cnm] else cadd<-NA;
+  if (class(cadd.cnm)=='character' & cadd.cnm %in% colnames(elementMetadata(rows))) cadd<-elementMetadata(rows)[, cadd.cnm] else cadd<-NA;
   
   # column names of different types of regions
   nm1<-c('intergenic', 'promoter', 'fiveUTR', 'coding', 'spliceSite', 'intron', 'threeUTR');
