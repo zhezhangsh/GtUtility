@@ -15,10 +15,10 @@ annotateLocation<-function(rows, chromosome.mapping, species='human') {
     txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene;
     
     # known gene IDs and names
-    library(org.Hs.eg.db);
-    sym<-org.Hs.egSYMBOL;
-    keys<-mappedkeys(sym);
-    gn<-unlist(as.list(sym[keys]));
+    library(org.Hs.eg.db); print(1);
+    sym<-org.Hs.egSYMBOL; print(2);
+    keys<-mappedkeys(sym); print(3);
+    gn<-unlist(as.list(sym[keys])); print(4);
     
     # make chromosome names consistent
     chr<-seqlevels(rows);
