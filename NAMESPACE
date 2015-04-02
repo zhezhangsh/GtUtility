@@ -1,5 +1,8 @@
 import(utils);
 import(Biobase);
+import(BiocGenerics);
+import(GenomeInfoDb);
+import(AnnotationDbi);
 
 # Export the public standalone methods in GtUtility
 export("alleleFreq");
