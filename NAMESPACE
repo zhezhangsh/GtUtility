@@ -1,10 +1,3 @@
-import(methods)
-import(utils)
-import(Biobase)
-import(DBI)
-import(RSQLite)
-import(BiocGenerics)
-import(AnnotationDbi)
 
 # Export GtUtility class.
 exportClasses(
