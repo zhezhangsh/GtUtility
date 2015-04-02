@@ -1,3 +1,5 @@
+import(AnnotationDbi);
+
 # Export GtUtility class.
 exportClasses(
     "GtUtility" 
