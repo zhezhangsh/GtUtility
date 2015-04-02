@@ -5,6 +5,7 @@ annotateLocation<-function(rows, chromosome.mapping, species='human') {
   # species   Currently accept only human
   
   library(VariantAnnotation);
+  library(AnnotationDbi);
   
   if (species=='human') {
     library(BSgenome.Hsapiens.UCSC.hg19);
