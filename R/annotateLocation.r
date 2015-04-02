@@ -21,10 +21,9 @@ annotateLocation<-function(rows, chromosome.mapping, species='human') {
     #keys<-mappedkeys(sym); 
     #gn<-unlist(as.list(sym[keys]));
     
-    print(class(org.Hs.egSYMBOL))
-    keys<-mappedkeys(org.Hs.egSYMBOL); 
-    gn<-unlist(as.list(org.Hs.egSYMBOL[keys])); 
-    
+    #print(class(org.Hs.egSYMBOL))
+    #gn<-unlist(as.list(org.Hs.egSYMBOL[keys])); 
+    gn<-unlist(as.list(org.Hs.egSYMBOL));
     
     # make chromosome names consistent
     chr<-seqlevels(rows);
