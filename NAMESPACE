@@ -28,5 +28,5 @@ exportMethods (
     "selectIBD",
     "subsetFromDb",
     "subsetSamples",
-    "analyzeTrio",
+    "analyzeTrio"
 )
