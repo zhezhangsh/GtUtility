@@ -1,4 +1,4 @@
-import(Biobase)
+import(Biobase);
 
 # Export the public standalone methods in GtUtility
 export("alleleFreq");
