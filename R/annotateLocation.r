@@ -21,7 +21,7 @@ annotateLocation<-function(rows, chromosome.mapping, species='human') {
     #keys<-mappedkeys(sym); 
     #gn<-unlist(as.list(sym[keys]));
     
-    print(class('org.Hs.egSYMBOL'))
+    print(class(org.Hs.egSYMBOL))
     keys<-mappedkeys(org.Hs.egSYMBOL); 
     gn<-unlist(as.list(org.Hs.egSYMBOL[keys])); 
     
