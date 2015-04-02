@@ -1,29 +1,25 @@
-
-# Export GtUtility class.
-
 # Export the public standalone methods in GtUtility
-exportMethods (
-    "alleleFreq",
-    "annotateCoding",
-    "annotateLocation",
-    "countGenotype",
-    "countGenotypeCl",
-    "filterVariants",
-    "getEFF",
-    "loadVcf",
-    "map2gene",
-    "mergeRegions",
-    "parseVcf",
-    "recodeCalls,
-    "runFisher",
-    "runFisherCl",
-    "runIBD",
-    "runSkat",
-    "runSkatCl",
-    "runTrend",
-    "runTrendCl",
-    "selectIBD",
-    "subsetFromDb",
-    "subsetSamples",
-    "analyzeTrio"
-)
+export("alleleFreq");
+export("annotateCoding");
+export("annotateLocation");
+export("countGenotype");
+export("countGenotypeCl");
+export("filterVariants");
+export("getEFF");
+export("loadVcf");
+export("map2gene");
+export("mergeRegions");
+export("parseVcf");
+export("recodeCalls");
+export("runFisher");
+export("runFisherCl");
+export("runIBD");
+export("runSkat");
+export("runSkatCl");
+export("runTrend");
+export("runTrendCl");
+export("selectIBD");
+export("subsetFromDb");
+export("subsetSamples");
+export("analyzeTrio");
+
