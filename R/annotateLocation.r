@@ -17,9 +17,14 @@ annotateLocation<-function(rows, chromosome.mapping, species='human') {
     
     # known gene IDs and names
     library(org.Hs.eg.db); 
-    sym<-org.Hs.egSYMBOL; 
-    keys<-mappedkeys(sym); 
-    gn<-unlist(as.list(sym[keys])); 
+    #sym<-org.Hs.egSYMBOL; 
+    #keys<-mappedkeys(sym); 
+    #gn<-unlist(as.list(sym[keys]));
+    
+    print(class('org.Hs.egSYMBOL'))
+    keys<-mappedkeys(org.Hs.egSYMBOL); 
+    gn<-unlist(as.list(org.Hs.egSYMBOL[keys])); 
+    
     
     # make chromosome names consistent
     chr<-seqlevels(rows);
