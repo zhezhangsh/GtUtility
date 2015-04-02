@@ -1,3 +1,5 @@
+import(utils);
+
 # Export the public standalone methods in GtUtility
 export("alleleFreq");
 export("annotateCoding");
