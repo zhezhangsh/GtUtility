@@ -1,8 +1,5 @@
 
 # Export GtUtility class.
-exportClasses(
-    "GtUtility" 
-)
 
 # Export the public standalone methods in GtUtility
 exportMethods (
