@@ -17,5 +17,7 @@ library(GtUtility);
 # Run the following shell command
 ### specify the full path if the files are not within your working directory
 ### change the path to Rscript executible if it's installed elsewhere
+
 /usr/local/bin/Rscript ./runSmpComp.r ./runSmpComp.yaml
+
 ```
