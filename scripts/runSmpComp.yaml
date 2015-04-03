@@ -1,0 +1,42 @@
+---
+### Config a run of one or multiple pairwise sample group comparisons, using a genotyping data set, at variant, gene, and pathway levels.
+### OPTIONAL PARAMETERS ###
+prms:
+  num.threads: 4         	# use value between 1-12
+  skat.weight: 1         	# all variants have the same weight if 1; SKAT default if 0
+  ar.only: FALSE         	# use autosomal recessive variants only
+  sex.chromosomes: FALSE 	# use variants on X/Y chromosomes
+  limit.variant: TRUE    	# limit variants to those mapped to tested genes and pathways
+  limit.gene: TRUE      	# limit genes to those mapped to tested pathways
+  run.pca: TRUE	         	# Whether to run a PCA
+  pc.as.cov: 2 			# Number of PC used as covariants of Trend and Skat tests
+
+### Location of the output files 
+path: /nas/is1/PCGC/gVCF6703/compare_groups/outputs/test
+
+### Location of genetype call matrix ###
+# it's an integer matrix using 0,1,2 to represent AA, AB, BB, no calls should be NA
+genotype.matrix: /nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/variants/genotype_tapvr_controls.rdata
+
+### Location of variant annotation
+# the rows of annotation data.frame should match exactly to the rows of genotyping matrix
+# it includes pre-defined columns as specified in /nas/is1/PCGC/gVCF6703/README.pdf
+variant.annotation: /nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/variants/annotation_tapvr_controls.rdata
+
+### Gene to variant mapping
+# a named list, each element includes all variants mapped to the same gene
+gene2variant: /nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/genes/all_genes.rdata
+
+### Pathway to gene mapping
+# a named list, each element includes all genes mapped to the same pathway
+pathway2gene: /nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/pathways/SHH_mini_interactome_revised.rdata
+
+### The pairwise comparisons of sample groups to perform
+# A nested list, each element is a list of 2 named elements; with column/sample IDs of controls and cases
+sample.groups: /nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/comparisons/AUT-TAPVR_Child.rdata
+
+### Whether to re-load all data
+# save time, but risky if FALSE
+# rm(list=ls()) before each run to clean up workspace if FALSE
+reload.all: TRUE
+

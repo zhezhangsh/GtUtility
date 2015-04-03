@@ -17,7 +17,7 @@ library(yaml);
 
 args<-commandArgs(TRUE); # YAML file name
 yaml<-yaml.load_file(args[1]);
-inputs<-sapply(names(yaml), function(nm) assign(nm, yaml[[nm]])); 
+inputs<-sapply(names(yaml), function(nm) assign(nm, yaml[[nm]], envir = .GlobalEnv)); 
 
     ####################
     ### LOADING DATA ###
@@ -225,6 +225,6 @@ doComp<-function(smps, path, prms, geno, anno, g2v, p2g) {
     ######################
 
 ####################################################################################
-#fld<-sapply(grps, function(grps) doComp(grps, path, prms, geno, anno, g2v, p2g));###
+fld<-sapply(grps, function(grps) doComp(grps, path, prms, geno, anno, g2v, p2g));###
 ####################################################################################
 
