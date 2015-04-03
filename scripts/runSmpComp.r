@@ -1,7 +1,7 @@
 # Script description: this script performs one or multiple pairwise comparison of sample groups
 # It put together statistical tests on variant-, gene-, and pathway-level data
 # It takes input from a .yaml file, which defines the parameters to run this script, such as file names of the input data
-# A template of the .yaml file 
+# A template of the .yaml file: https://github.research.chop.edu/BiG/GtUtility/raw/master/scripts/runSmpComp_ex.yaml
 
 # The script works on Isolon within this R instance: /usr/local/bin/R
 
