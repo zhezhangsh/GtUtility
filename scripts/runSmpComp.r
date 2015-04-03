@@ -5,22 +5,28 @@
 
 # The script works on Isolon within this R instance: /usr/local/bin/R
 
-##############
-### INPUT ####
-##############
-
 ### Comment out the next two lines to re-install package from GitHub repo    
 #library(devtools);
 #install_github(host="github.research.chop.edu/api/v3",repo="BiG/GtUtility");
 library(GtUtility);
+library(yaml);
 
+    ####################################
+    ### LOADING PARAMETERS FROM YAML ###
+    ####################################
+
+args<-commandArgs(TRUE); # YAML file name
+yaml<-yaml.load_file(args[1]);
+inputs<-sapply(names(yaml), function(nm) assign(nm, yaml[[nm]])); 
 
     ####################
     ### LOADING DATA ###
     ####################
-if (FALSE) {    
+
 if (!file.exists(path)) dir.create(path); 
-    
+writeLines(as.yaml(inputs), paste(path, 'inputs.yaml', sep='/')); # save inputs as a yaml file
+save(inputs, file=paste(path, 'inputs.rdata', sep='/')); # save inputs as R object
+
 cat('Loading data ...\n');
 if (exists('geno')) {if (class(geno)!='matrix' | reload.all) geno<-eval(parse(text=load(genotype.matrix)))} else geno<-eval(parse(text=load(genotype.matrix))); 
 if (!exists('anno') | reload.all) anno<-eval(parse(text=load(variant.annotation))); 
@@ -56,7 +62,7 @@ if (!prms$sex.chromosomes) {
 cat('Analyzing', nrow(geno), 'variants.\n');
 cat('Analyzing', length(g2v), 'genes.\n');
 cat('Analyzing', length(p2g), 'pathways.\n');
-};
+
     
     #####################################################
     ### A FUNCTION TO PERFORM ONE SUBGROUP COMPARISON ###
