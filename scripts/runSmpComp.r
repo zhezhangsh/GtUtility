@@ -1,6 +1,7 @@
-# Run description: PCGC cases (total and subgroups) vs. Autism siblings, pathways include SHH/90Gene interactomes and their subsets
-
-# Script description: this script performs one or multiple variant-, gene-, and pathway-level comparisons of sample subgroups
+# Script description: this script performs one or multiple pairwise comparison of sample groups
+# It put together statistical tests on variant-, gene-, and pathway-level data
+# It takes input from a .yaml file, which defines the parameters to run this script, such as file names of the input data
+# A template of the .yaml file 
 
 # The script works on Isolon within this R instance: /usr/local/bin/R
 
@@ -13,86 +14,11 @@
 #install_github(host="github.research.chop.edu/api/v3",repo="BiG/GtUtility");
 library(GtUtility);
 
-############################################################################################
-### OPTIONAL PARAMETERS ###
-prms<-list( 
-  num.threads=4, # use value between 1-12
-  skat.weight=1, # all variants have the same weight if 1; SKAT default if 0
-  ar.only=FALSE, # use autosomal recessive variants only
-  sex.chromosomes=FALSE, # use variants on X/Y chromosomes
-  limit.variant=TRUE, # limit variants to those mapped to tested genes and pathways
-  limit.gene=TRUE # limit genes to those mapped to tested pathways
-);
-############################################################################################
 
-
-###########################################################################################################
-### Location of the output files 
-path<-"/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/outputs/mouse_pathways_SHHI_f2f_analysis/";
-if(!file.exists(path)) dir.create(path);
-
-############################################################################################################################################
-### Location of genetype call matrix ###
-# it's an integer matrix using 0,1,2 to represent AA, AB, BB, no calls should be NA
-genotype.matrix<-"/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/variants/genotype_all.rdata";
-
-#############################################################################################################################################
-### Location of variant annotation
-# the rows of annotation data.frame should match exactly to the rows of genotyping matrix
-# it includes pre-defined columns as specified in /nas/is1/PCGC/gVCF6703/README.pdf
-variant.annotation<-"/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/variants/annotation_all.rdata";
-
-#######################################################################################################################################
-### Gene to variant mapping
-# a named list, each element includes all variants mapped to the same gene
-gene2variant<-"/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/genes/all_genes.rdata";
-
-#######################################################################################################################################
-### Pathway to gene mapping
-# a named list, each element includes all genes mapped to the same pathway
-pathway2gene<-"/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/pathways/mouse_SHHI.rdata";
-
-#####################################################################################################################################################
-# The comparisons to perform
-# A nested list, each element is a list of 2 named elements; with column/sample IDs of controls and cases
-sample.groups<-"/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/inputs/comparisons/AUT-PCGC_Child_Subgroups.rdata"; 
-# !THIS TEMPLATE PERFORMS PAIRWISE COMPARISONS BETWEEN DIFFERENT SAMPLE SUBGROUPS ON THE SAME VARIANTS, GENES, AND PATHWAYS #
-
-##############################################################
-### Whether to reload all data
-# save time, but risky if FALSE
-# rm(list=ls()) before each run to clean up workspace if FALSE
-reload.all<-TRUE; 
-##############################################################
-
-#########################################################################################################################################################
-
-
-
-    
-
-
-# END OF USER-SPECIPIC PARAMETERS
-
-    
-    
-    
-    
-    
-########################################################################################################################################################################
-########################################################################################################################################################################
-########################################################################################################################################################################
-########################################################################################################################################################################
-    
-# save log script
-run.time<-format(Sys.time());
-file.copy("/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/runs/run.r", 
-          paste("/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/runs/run_log/", run.time, '.r', sep=''));
-    
     ####################
     ### LOADING DATA ###
     ####################
-    
+if (FALSE) {    
 if (!file.exists(path)) dir.create(path); 
     
 cat('Loading data ...\n');
@@ -130,7 +56,7 @@ if (!prms$sex.chromosomes) {
 cat('Analyzing', nrow(geno), 'variants.\n');
 cat('Analyzing', length(g2v), 'genes.\n');
 cat('Analyzing', length(p2g), 'pathways.\n');
-
+};
     
     #####################################################
     ### A FUNCTION TO PERFORM ONE SUBGROUP COMPARISON ###
@@ -293,9 +219,6 @@ doComp<-function(smps, path, prms, geno, anno, g2v, p2g) {
     ######################
 
 ####################################################################################
-fld<-sapply(grps, function(grps) doComp(grps, path, prms, geno, anno, g2v, p2g));###
+#fld<-sapply(grps, function(grps) doComp(grps, path, prms, geno, anno, g2v, p2g));###
 ####################################################################################
 
-write.table(fld, row=FALSE, col=FALSE, sep='\t', qu=FALSE, 
-          paste("/nas/is1/PCGC/gVCF6703/minimal_requirement_variants/subgroup_comparisons/runs/run_log/", run.time, '.txt', sep=''));
-    
