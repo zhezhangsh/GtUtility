@@ -1,7 +1,7 @@
 # parse information stored in an R VCF object to get more accessible values for downstream analysis, especially the genotype calls (replace 0/0, 0/1, 1/1, ... with 0, 1, 2, ...) 
-parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.only=FALSE, info.fields=c(), filter=list(), keep.no.geno.qual=FALSE,
-                   score=c(20, Inf), depth=c(10, Inf), depth.alleles=c(3, Inf), hetero.alleles.ratio=c(0.1, 10), other.alleles.pct=c(0, 0.05),
-                   outputs=1) {
+parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.only=FALSE, info.fields=names(info(vcf)), filter=list(), keep.no.geno.qual=FALSE,
+                   score=c(20, Inf), depth=c(10, Inf), depth.alleles=c(3, Inf), hetero.alleles.ratio=c(0.1, 10), other.alleles.pct=c(0, 0.05), missing.default=NA,
+                   phased=FALSE, outputs=1) {
   # vcf:   A VCF or CollapsedVCF object
   # chromosome, range, variants, samples, snp.only:   Parameters used to filter variants; failed variants will be completely removed.
       # chromosome:   limit the variants to one or more chromosomes; no filitering if NA
@@ -19,6 +19,8 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
       # depth.alleles:        A selected heterozygous call should have sequencing depth of both alleles within the given range, such as (3, 200)
       # hetero.alleles.ratio: A selected heterozygous call should have the ratio of sequencing depths of two alleles within the given range, such as (1/10, 10)
       # other.alleles.pct:    A selected heterozygous call should have total reads from alleles not contributing to the genotype within the given range, such as (0, 0.1)
+      # missing.default:      The default value to replace calls failed filtering 
+  # phased:   If TRUE the genotype call is phased; 0/1 will be coded as 1 and 1/0 will be coded as -1; <missing.default> will be set to NA
   # outputs:  What to output; Only the genotype matrix if 0; Variant annotation and alleles if 1.
   # keep.no.geno.qual: whether to keep the genotype call if it has no information associated to the call, such as depth, quality score, ...
   ###############################################################################################################
@@ -72,7 +74,7 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
   }
   
   # filter out unwanted variants
-  vcf<-vcf[names(rows), ];
+  vcf<-vcf[rownames(vcf) %in% names(rows), ];
   
   if (nrow(vcf)==0) { # no more variants left
     gt<-matrix(nr=0, nc=ncol(vcf));
@@ -137,7 +139,7 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
     # generate output matrix
     g<-code[gt]; # convert genotype characters to integers
     flg<-f1 & f2 & f3 & f4 & f5; # keep the genotype call when flag=TRUE
-    g[!is.na(g) & !flg]<--1;
+    g[!is.na(g) & !flg]<-missing.default;
     g<-matrix(as.integer(g), nr=nrow(vcf));
     rownames(g)<-rownames(vcf);
     colnames(g)<-colnames(vcf);

@@ -21,8 +21,6 @@ loadVcf<-function(fn.in, fn.out, genome.name, regions=NA, split.regions=FALSE, v
     if (verbose) print('Indexing VCF file...');
     indexTabix(fn.in, format='vcf');
   } 
-
-  
   
   chr.names<-headerTabix(fn.in)$seqnames; # seqnames in VCF file
   if (!identical(regions, NA)) regions<-regions[names(regions) %in% chr.names]; # remove chr names not in VCF file
