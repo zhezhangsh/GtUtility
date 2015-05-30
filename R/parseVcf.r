@@ -101,45 +101,57 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
     rownames(combs)<-names(code);
     code0<-code; 
     names(code0)<-paste(combs[,2], combs[,1], sep='/');
+    if (phased) code0<--1*code0;
     code<-c(code, code0);
+    code1<-code;
+    names(code1)<-sub('/', '|', names(code1));
+    code<-c(code, code1);
+    combs<-do.call('rbind', strsplit(names(code), '[/|]')); 
+    combs<-cbind(as.numeric(combs[,1]), as.numeric(combs[,2]));
+    rownames(combs)<-names(code);
     
     # Retrieve fields
     geno<-geno(vcf); 
     gq<-as.vector(geno$GQ); # genotype call quality
-    gt<-as.vector(geno$GT); # genotype
-    ad<-as.list(geno$AD);
+    gt<-as.vector(geno$GT); # genotype calls
+    ad<-as.list(geno$AD); # allele depth
     
-    tps<-rownames(combs);
-    tps<-tps[tps %in% gt];
-    cts<-cbind(A1=rep(NA, length(gt)), A2=rep(NA, length(gt)));
-    for (i in 1:length(tps)) {
-      ind<-combs[tps[i],]+1;
-      d<-ad[gt==tps[i]]; # allele depth of calls with given genotype
-      if (ind[1]==ind[2]) { # homozygous
-        ct<-cbind(sapply(d, function(d) d[ind[1]]), rep(0, length(d)));
-        cts[gt==tps[i], ]<-ct;
-      } else cts[gt==tps[i], ]<-t(sapply(d, function(d) d[ind])); # heterozygous calls
-    }
-    sm<-sapply(ad, sum);
-    cts<-cbind(cts, Others=sm-rowSums(cts)); # read counts by alleles
+    ##################################################################
+    # filtering based on genotyping call quality and depth
+    if (length(gt) == length(gq) & length(ad)) {
+      # create a matrix of read depth per allele
+      tps<-rownames(combs);
+      tps<-tps[tps %in% gt];
+      cts<-cbind(A1=rep(NA, length(gt)), A2=rep(NA, length(gt)));
+      for (i in 1:length(tps)) {
+        ind<-combs[tps[i],]+1;
+        d<-ad[gt==tps[i]]; # allele depth of calls with given genotype
+        if (ind[1]==ind[2]) { # homozygous
+          ct<-cbind(sapply(d, function(d) d[ind[1]]), rep(0, length(d)));
+          cts[gt==tps[i], ]<-ct;
+        } else cts[gt==tps[i], ]<-t(sapply(d, function(d) d[ind])); # heterozygous calls
+      }
+      sm<-sapply(ad, sum);
+      cts<-cbind(cts, Others=sm-rowSums(cts)); # read counts by alleles
+      
+      # preparing filtering
+      tps.homo<-rownames(combs)[combs[,1]==combs[,2]]; # homozygous genotypes
+      is.homo<-gt %in% tps.homo; # whether is homozygous call
+      ttl<-cts[,1]+cts[,2]; # total reads contributing to the call
+      rt<-cts[,2]/cts[,1]; # ratio of reads of two allels, should be 0 if the call is homozygous
+      oth<-cts[,3]/sm; # percentage of reads of alleles not contributing to the call
+      
+      f1<-(!is.na(gq) & gq>=min(score) & gq<=max(score)) | (is.na(gq) & keep.no.geno.qual); # genotype quality score within range?
+      f2<-(ttl>=min(depth) & ttl<=max(depth)) | (is.na(ttl) & keep.no.geno.qual); # total read counts within range?
+      f3<-(is.homo | (cts[,1]>=min(depth.alleles) & cts[,2]>=min(depth.alleles)&cts[,1]<=max(depth.alleles)&cts[,2]<=max(depth.alleles))) | (is.na(cts[,1]) & is.na(cts[,2]) & keep.no.geno.qual); # both allele reads within range? (heterozygous only)
+      f4<-(is.homo | (!is.na(rt) & rt>=min(hetero.alleles.ratio) & rt<=max(hetero.alleles.ratio))) | (is.na(rt) & keep.no.geno.qual); # ratio of reads from two alleles within range? (heteronzygous only)
+      f5<-(!is.na(oth) & oth>=min(other.alleles.pct) & oth<=max(other.alleles.pct)) | (is.na(oth) & keep.no.geno.qual); # percentage of reads from other alleles within range?
+      flg<-f1 & f2 & f3 & f4 & f5; # keep the genotype call when flag=TRUE
+    } else flg<-c();
     
-    # preparing filtering
-    tps.homo<-rownames(combs)[combs[,1]==combs[,2]]; # homozygous genotypes
-    is.homo<-gt %in% tps.homo; # whether is homozygous call
-    ttl<-cts[,1]+cts[,2]; # total reads contributing to the call
-    rt<-cts[,2]/cts[,1]; # ratio of reads of two allels, should be 0 if the call is homozygous
-    oth<-cts[,3]/sm; # percentage of reads of alleles not contributing to the call
-        
-    f1<-(!is.na(gq) & gq>=min(score) & gq<=max(score)) | (is.na(gq) & keep.no.geno.qual); # genotype quality score within range?
-    f2<-(ttl>=min(depth) & ttl<=max(depth)) | (is.na(ttl) & keep.no.geno.qual); # total read counts within range?
-    f3<-(is.homo | (cts[,1]>=min(depth.alleles) & cts[,2]>=min(depth.alleles)&cts[,1]<=max(depth.alleles)&cts[,2]<=max(depth.alleles))) | (is.na(cts[,1]) & is.na(cts[,2]) & keep.no.geno.qual); # both allele reads within range? (heterozygous only)
-    f4<-(is.homo | (!is.na(rt) & rt>=min(hetero.alleles.ratio) & rt<=max(hetero.alleles.ratio))) | (is.na(rt) & keep.no.geno.qual); # ratio of reads from two alleles within range? (heteronzygous only)
-    f5<-(!is.na(oth) & oth>=min(other.alleles.pct) & oth<=max(other.alleles.pct)) | (is.na(oth) & keep.no.geno.qual); # percentage of reads from other alleles within range?
-
     # generate output matrix
     g<-code[gt]; # convert genotype characters to integers
-    flg<-f1 & f2 & f3 & f4 & f5; # keep the genotype call when flag=TRUE
-    g[!is.na(g) & !flg]<-missing.default;
+    if (length(flg) == length(g)) g[!is.na(g) & !flg]<-missing.default;
     g<-matrix(as.integer(g), nr=nrow(vcf));
     rownames(g)<-rownames(vcf);
     colnames(g)<-colnames(vcf);
