@@ -106,9 +106,16 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
     code1<-code;
     names(code1)<-sub('/', '|', names(code1));
     code<-c(code, code1);
+    code<-code[!duplicated(names(code))];
     combs<-do.call('rbind', strsplit(names(code), '[/|]')); 
     combs<-cbind(as.numeric(combs[,1]), as.numeric(combs[,2]));
     rownames(combs)<-names(code);
+    cmb<-combs[combs[,1]==0 & grepl('/', rownames(combs)), ];
+    rownames(cmb)<-0:(ncol(lll)-1);
+    combs<-rbind(combs, cmb);
+    c1<-code[paste('0', rownames(cmb), sep='/')];
+    names(c1)<-rownames(cmb);
+    code<-c(code, c1);
     
     # Retrieve fields
     geno<-geno(vcf); 
@@ -150,6 +157,8 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
     } else flg<-c();
     
     # generate output matrix
+    nocode<-setdiff(unique(gt), names(code));
+    if (length(nocode) > 0) {c1<-rep(NA, length(nocode)); names(c1)<-nocode; code<-c(code, c1)}
     g<-code[gt]; # convert genotype characters to integers
     if (length(flg) == length(g)) g[!is.na(g) & !flg]<-missing.default;
     g<-matrix(as.integer(g), nr=nrow(vcf));
