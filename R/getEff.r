@@ -33,11 +33,25 @@ parseEFF<-function(fn.vcf, fn.out, n.total=-1, n.batch=1000000, n.cluster=8) {
   ########################################################################################
   # Parse a number of lines
   parser<-function(ls) {
+    ########################################################################################
+    # ID Parser
+    parserId<-function(ls) {
+      if (length(ls) == 0) c() else {      
+        fld<-t(sapply(strsplit(ls, '\t'), function(x) x[1:5]));
+        id<-fld[, 3];
+        id[is.na(id)]<-'';
+        id[id=='.']<-paste(fld[id=='.', 1], ':', fld[id=='.', 2], '_', fld[id=='.', 4], '/', sapply(strsplit(fld[id=='.', 5], ','), function(x) x[1]), sep='');
+        id;
+      }
+    }
+    ########################################################################################
+    
     codes=c('LOW', 'MODERATE', 'HIGH', 'MODIFIER');
-    ls<-ls[grep(';EFF=', ls)];
+    #ls<-ls[grep(';EFF=', ls)];
     if (length(ls) == 0) matrix(nr=0, nc=4) else {
+      snp.id<-parserId(ls); print(head(snp.id));
       ls<-sapply(strsplit(ls, ';EFF='), function(l) l[2]);
-      ls<-sapply(strsplit(ls, '\t'), function(l) l[1]);
+      ls<-sapply(strsplit(ls, '[;\t]'), function(l) l[1]);
       ls<-strsplit(ls, ',');
       eff<-unlist(ls, use.names=FALSE);
       cd<-sapply(strsplit(eff, '[(|]'), function(x) x[2]);
@@ -45,6 +59,7 @@ parseEFF<-function(fn.vcf, fn.out, n.total=-1, n.batch=1000000, n.cluster=8) {
       
       ids<-rep(1:length(ls), sapply(ls, length));
       for (i in 1:length(codes)) out[unique(ids[cd==codes[i]]), i]<-1;
+      rownames(out)<-snp.id;
       out;
     }
   }
@@ -67,7 +82,7 @@ parseEFF<-function(fn.vcf, fn.out, n.total=-1, n.batch=1000000, n.cluster=8) {
   while (length(ls<-readLines(con, n=n.batch, warn = FALSE)) > 0 & cur.line<n.total) {
     cat(cur.line, '\n');
     eff<-parseLines(ls, n.cluster);
-    write.table(eff, fn.out, append=TRUE, quote=FALSE, sep='\t', row.names=FALSE, col.names=FALSE);
+    write.table(eff, fn.out, append=TRUE, quote=FALSE, sep='\t', row.names=TRUE, col.names=FALSE);
     cur.line <- cur.line + n.batch;
   } 
   
