@@ -45,7 +45,7 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
   if (length(chromosome)>0) rows<-rows[seqnames(rows) %in% chromosome];
   
   # select variants within given range
-  if (class(range)=='GRanges')  rows<-rrows[countOverlaps(rows, range)>0];
+  if (class(range)=='GRanges')  rows<-rows[countOverlaps(rows, range)>0];
 
   # select variants based on metadata fields
   names(filter)<-toupper(names(filter));
