@@ -21,7 +21,7 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
       # other.alleles.pct:    A selected heterozygous call should have total reads from alleles not contributing to the genotype within the given range, such as (0, 0.1)
       # missing.default:      The default value to replace calls failed filtering 
   # phased:   If TRUE the genotype call is phased; 0/1 will be coded as 1 and 1/0 will be coded as -1; <missing.default> will be set to NA
-  # outputs:  What to output; Only the genotype matrix if 0; Variant annotation and alleles if 1.
+  # outputs:  What to output; Onlfy the genotype matrix if 0; Variant annotation and alleles if 1.
   # keep.no.geno.qual: whether to keep the genotype call if it has no information associated to the call, such as depth, quality score, ...
   ###############################################################################################################
   #Filter variants by location, ID, etc.
@@ -31,7 +31,7 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
   if (length(variants)>0) vcf<-vcf[variants,];
   if (length(samples)>0) vcf<-vcf[, samples];
 
-  rows<-rowData(vcf);
+  rows<-rowRanges(vcf);
   
   # merge specified fields in INFO into row annotation
   info<-info(vcf);
