@@ -85,6 +85,11 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
     alt<-elementMetadata(rows)$ALT; # alternative alleles
     nl<-elementLengths(alt); # number of altermative alleles
     alt<-split(as.character(unlist(alt)), rep(1:length(nl), nl)); # convert to characters
+    if (length(nl[nl==0]) > 0) {
+      alt<-alt[as.character(1:length(ref))]; 
+      names(alt)<-1:length(ref);
+      alt[nl==0]<-"";
+    }
     
     # convert alleles (reference and alternatives) into a matrix, number of columns equal to the largest number of alleles of all variants
     lll<-matrix(nr=length(rows), nc=max(nl));
