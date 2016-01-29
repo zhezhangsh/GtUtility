@@ -128,9 +128,12 @@ parseVcf<-function(vcf, variants=NA, samples=NA, chromosome=NA, range=NA, snp.on
     gt<-as.vector(geno$GT); # genotype calls
     ad<-as.list(geno$AD); # allele depth
     
+    gt[is.na(gt)]<-'.';
+    gq[is.na(gq)]<-0;
+    
     ##################################################################
     # filtering based on genotyping call quality and depth
-    if (length(gt) == length(gq) & length(ad)) {
+    if (length(gt) == length(gq) & length(ad) == length(gt)) {
       # create a matrix of read depth per allele
       tps<-rownames(combs);
       tps<-tps[tps %in% gt];
