@@ -14,6 +14,7 @@ export("getEFF");
 export("loadVcf");
 export("map2gene");
 export("mergeRegions");
+export("parseFastQC");
 export("parseVcf");
 export("recodeCalls");
 export("runFisher");
