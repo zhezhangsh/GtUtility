@@ -13,6 +13,7 @@ export("filterVariants");
 export("getEFF");
 export("loadVcf");
 export("map2gene");
+export("mapAnnotation");
 export("mergeRegions");
 export("parseFastQC");
 export("parseVcf");
